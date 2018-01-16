@@ -17,14 +17,21 @@ public:
 
   }
   static Clock *getInstance() {
-    std::cout << "hola" << '\n';
+    std::cout << "getInstance()" << '\n';
     if( instance == 0 ) {
       instance = new Clock;
     }
     return instance;
   }
+  static Clock *deleteInstance() {
+    if( instance != NULL ) {
+      delete instance;
+      instance = NULL;
+    }
+  }
 private:
-  Clock(){};
+  Clock(){}
+  ~Clock(){}
   static Clock* instance;
 };
 
