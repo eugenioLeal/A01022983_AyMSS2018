@@ -1,10 +1,16 @@
-#include <iostream>
-using namespace std;
+// Patrón clonar (clase móviles, tablet, smartphone, smartwatch): 
+//3 apuntadores, 2 variables normales. 4 métodos. Método clone. Constructores copia.
+// Tarea: hacer que todos hereden el metodo clone() 
 
-class Moviles {
+#include <iostream>
+#include <string>
+using namespace std;
+//------------------------------------//
+class Movil {
 public:
-  Moviles() {}
-  virtual Moviles* clone() = 0;
+  Movil() {}
+  virtual Movil* clone() = 0;
+  virtual void queSoy() = 0;
   void encender() {
     encendido = true;
     std::cout << "Encendido! " << '\n';
@@ -23,13 +29,24 @@ public:
     id = 0;
     encendido = false;
   };
-protected:
+public:
   char* sistemaOperativo;
   char* marca;
   int id;
   bool encendido;
 };
-class Tablet : public Moviles {
+//------------------------------------//
+// Aqui trate de usar templates para heredar clone
+// template <typename Padre, typename Hijo>
+// class MovilClonable : public Padre {
+// public:
+//   virtual Padre* clone() {
+//     return new Hijo(static_cast<Hijo const &>(*this));
+//   }
+// };
+//------------------------------------//
+//class Tablet : public MovilClonable<Movil, Tablet> {
+class Tablet : public Movil {
 public:
   Tablet() {}
   // Copy Constructor
@@ -40,13 +57,18 @@ public:
     encendido = temp.encendido;
     model = new char(*(temp.model));
   }
-  Moviles* clone() {
+  Movil* clone() {
     return new Tablet(*this);
+  }
+  void queSoy() {
+    std::cout << "soy Tablet" << std::endl;
   }
 protected:
   char* model;
+// private:
+//   typedef MovilClonable<Movil, Tablet> ClasePadre;
 };
-class Smartphone : public Moviles {
+class Smartphone : public Movil {
 public:
   Smartphone() {}
   // Copy Constructor
@@ -57,13 +79,17 @@ public:
     encendido = temp.encendido;
     model = new char(*(temp.model));
   }
-  Moviles* clone() {
+  Movil* clone() {
     return new Smartphone(*this);
+  }
+  void queSoy() {
+    std::cout << "soy Smartphone" << std::endl;
   }
 protected:
   char* model;
 };
-class Smartwatch : public Moviles {
+//------------------------------------//
+class Smartwatch : public Movil {
 public:
   Smartwatch() {}
   // Copy Constructor
@@ -74,15 +100,25 @@ public:
     encendido = temp.encendido;
     model = new char(*(temp.model));
   }
-  Moviles* clone() {
+  Movil* clone() {
     return new Smartwatch(*this);
+  }
+  void queSoy() {
+    std::cout << "soy Smartwatch" << std::endl;
   }
 protected:
   char* model;
 };
 
 int main(int argc, char const *argv[]) {
-  Moviles* uno = new Tablet();
+  Movil *miTablet = new Tablet();
+  miTablet->encender();
+  miTablet->queSoy();
+  
+  Movil *desconocido = miTablet->clone();
 
+  // free memory
+  delete miTablet;
+  delete desconocido;
   return 0;
 }

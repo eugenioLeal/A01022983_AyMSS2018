@@ -6,13 +6,18 @@ public:
 class Concrete1 : public Prototype {
 public:
   Prototype* clone() {
-    // not correct because it only returns a reference to itself
-    // return this;
-    // using keyword new utilizes Heap
+    //--------------------------------------------------//
+    //-- return this; is NOT correct because it only  --//
+    //-- returns a reference to itself.               --//
+    //--------------------------------------------------//
+    //-- Concrete1 copia = *(this); return &copia;    --//
+    //-- is NOT correct because it creates a          --//
+    //-- dangling pointer.                            --//
+    //--------------------------------------------------//
+    //-- Use the keyword new so that the program      --//
+    //-- utilizes the heap.                           --//
+    //--------------------------------------------------//
     return new Concrete1(*this);
-    /* the problem with this is that it dangling pointer
-     Concrete1 copia = *(this);
-     return &copia; */
   }
 };
 int main(int argc, char const *argv[]) {
