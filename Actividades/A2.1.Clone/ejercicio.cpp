@@ -1,6 +1,6 @@
-// Patrón clonar (clase móviles, tablet, smartphone, smartwatch): 
-//3 apuntadores, 2 variables normales. 4 métodos. Método clone. Constructores copia.
-// Tarea: hacer que todos hereden el metodo clone() 
+// Patrón clonar (clase móviles, tablet, smartphone, smartwatch):
+// 3 apuntadores, 2 variables normales. 4 métodos. Método clone. Constructores copia.
+// Tarea: hacer que todos hereden el metodo clone()
 
 #include <iostream>
 #include <string>
@@ -37,16 +37,16 @@ public:
 };
 //------------------------------------//
 // Aqui trate de usar templates para heredar clone
-// template <typename Padre, typename Hijo>
-// class MovilClonable : public Padre {
-// public:
-//   virtual Padre* clone() {
-//     return new Hijo(static_cast<Hijo const &>(*this));
-//   }
-// };
+template <class Base, class Subclass>
+class CloneCRTP : public Base {
+public:
+  Base* clone() {
+    return new Subclass(dynamic_cast<Subclass&>(*this));
+  }
+};
 //------------------------------------//
 //class Tablet : public MovilClonable<Movil, Tablet> {
-class Tablet : public Movil {
+class Tablet : public CloneCRTP<Movil, Tablet> {
 public:
   Tablet() {}
   // Copy Constructor
@@ -60,6 +60,7 @@ public:
   Movil* clone() {
     return new Tablet(*this);
   }
+  void doTabletOperations(){}
   void queSoy() {
     std::cout << "soy Tablet" << std::endl;
   }
@@ -111,10 +112,10 @@ protected:
 };
 
 int main(int argc, char const *argv[]) {
-  Movil *miTablet = new Tablet();
+  Movil *miTablet = new Tablet;
   miTablet->encender();
   miTablet->queSoy();
-  
+
   Movil *desconocido = miTablet->clone();
 
   // free memory
