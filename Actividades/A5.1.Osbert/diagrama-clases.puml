@@ -1,0 +1,52 @@
+@startuml
+
+class Usuario {
+    -nombre_usuario: string
+    -contrasena: string
+    -obraDeseada: Obra
+    +realizarOferta(): bool
+    +introducirDescripcion(Obra obradeseada)
+}
+
+class Compra {
+    -aceptada_rechazada: bool
+    +obtenDescripcion(): 
+    +buscarSubastas() : Subasta
+    +sumarPorcentaje() : void
+    +cambiarEstado() : void
+}
+
+class Galeria {
+    -obras : Obra
+}
+
+class Obra {
+    -artista : string
+    -precio : float
+    -ano : int
+    +obtenDescripcion() : string
+    +introduceDescripcion() : void
+}
+
+class ListaSubastas {
+    -lista : Subasta
+}
+
+class Subasta {
+    -obra : Obra
+    -costo : float
+    -ano : int
+    -listaDeSubastas : Subasta
+    +obtenInformacion(string x, int year) : Subasta
+    +obtenAno() : int
+    +obtenCosto() : float
+}
+
+
+
+Compra --> ListaSubastas
+Galeria o-- Obra
+ListaSubastas o-- Subasta
+Subasta *-- Obra
+
+@enduml

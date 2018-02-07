@@ -1,0 +1,46 @@
+@startuml
+
+left to right direction
+skinparam packageStyle rectangle
+
+:Osbert: as usuario
+:Sistema: as sistema
+:Vendedor: as vendedor
+
+
+rectangle compra_venta {
+    (Hallar cuadro parecido del mismo artista) as (hallar)
+    (Introducir descripción del cuadro) as (descripcion)
+    (Calcula el precio) as (calcula)
+    (Oferta) as (oferta)
+
+    usuario --> (descripcion)
+    usuario --> (oferta) : realiza
+    sistema --> (hallar)
+    sistema --> (calcula)
+    vendedor --> (oferta) : acepta/rechaza
+}
+@endluml
+
+
+
+# Descripción del sistema
+# Se va a desarrollar un sistema de información que sea capaz de administrar la compra y venta de cuadros. 
+# Además, se van a generar reportes que permitan mejorar la efectividad del proceso de toma de decisiones para 
+# la compra de obras de arte. 
+# Los informes contienen información de compra y venta de cuadros, los cuales se clasifican en obras maestras, 
+# obras representativas y obras de otro tipo.
+   
+# Un escenario del sistema  Osbert
+# Osbert desea comprar una obra maestra
+# 1.       Osbert introduce la descripción del cuadro
+# 2.       El sistema de información busca los registros de subastas para hallar el precio y el año de la
+#            venta del cuadro más parecido pintado por el mismo artista.
+# 3.       El sistema de información calcula el precio de compra máximo al sumar el 8.5 por ciento, 
+#               compuesto anualmente, por cada año transcurrido desde la subasta del cuadro más parecido
+# 4.       Osbert hace una oferta por debajo del precio de compra máximo, la oferta es aceptada por el vendedor.
+# 5.       Osbert introduce información de la venta (nombre y dirección del vendedor, precio de compra, etc.)
+#           Alternativas posibles
+#               a)       El vendedor rechaza la oferta de Osbert
+#               b)      No hay un cuadro parecido pintado por ese artista en el archivo de las subastas, 
+#                       así que Osbert no hace una oferta por el cuadro
