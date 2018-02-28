@@ -1,0 +1,43 @@
+@startuml
+class Command {
+  +Execute(): virtual void = 0
+}
+class Invoker {
+  -_commands
+  +StoreAndExecute(Command *command): void
+}
+class Cliente {
+  -id: int
+  -nombre: string
+  -apellido: string
+  -forma_de_contacto: string
+  -correo: string
+  -telefono: string
+  -calle: string
+  -numero: int
+  -colonia: string
+  +mandarCorreo(): void
+  +enviarSms(): void
+  +realizarLlamada(): void
+}
+
+class ClienteCorreo {
+
+}
+class ClienteSMS {
+
+}
+class ClienteLlamada {
+
+}
+
+Invoker o-- Command
+Command ^-- ClienteCorreo
+Command ^-- ClienteSMS
+Command ^-- ClienteLlamada
+
+ClienteCorreo --> Cliente
+ClienteSMS --> Cliente
+ClienteLlamada --> Cliente
+
+@enduml

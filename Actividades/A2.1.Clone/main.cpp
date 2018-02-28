@@ -28,7 +28,7 @@ int main(int argc, char const *argv[]) {
   std::cout << "copy " << *(w.val) << '\n';
 
   // Modify copy constructor
-  std::cout << "modifying val" << '\n';
+  std::cout << "modifying val of copy" << '\n';
   *(w.val) = 8;
   // Printing original
   std::cout << "instancia " << *(z->val) << '\n';
