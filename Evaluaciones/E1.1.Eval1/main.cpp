@@ -10,18 +10,68 @@ public:
 
 class Invoker {
 private:
-  std::vector<Command*> _commands;
+  // std::vector<Command*> _commands;
+  Command *cmd;
 public:
-    void StoreAndExecute(Command *command)
+    void initialize(Command *c) {
+      cmd = c;
+    }
+    void StoreAndExecute()
     {
-        if (command){
-            _commands.push_back(command);
-            command->Execute();
-        }
+        cmd->Execute();
     }
 };
 
 // Receiver
+class Receiver {
+public:
+  void mandarCorreo() {
+    std::cout << "Mandar Correo!" << '\n';
+  }
+  void enviarSms() {
+    std::cout << "Enviar SMS!" << '\n';
+  }
+  void realizarLlamada() {
+    std::cout << "Realizar Llamada!" << '\n';
+  }
+};
+
+class MandarCorreo : public Command {
+private:
+  Receiver *_receiver;
+public:
+  MandarCorreo(Receiver *receiver) {
+    _receiver = receiver;
+  }
+  void Execute() {
+    _receiver->mandarCorreo();
+  }
+};
+
+class EnviarSms : public Command {
+private:
+  Receiver *_receiver;
+public:
+  EnviarSms(Receiver *receiver) {
+    _receiver = receiver;
+  }
+  void Execute() {
+    _receiver->enviarSms();
+  }
+};
+
+class RealizarLlamada : public Command {
+private:
+  Receiver *_receiver;
+public:
+  RealizarLlamada(Receiver *receiver) {
+    _receiver = receiver;
+  }
+  void Execute() {
+    _receiver->realizarLlamada();
+  }
+};
+
 class Cliente {
   // id, nombre, apellido, forma de contacto, correo, teléfono, calle, número y colonia.
   int id;
@@ -33,21 +83,27 @@ class Cliente {
   string calle;
   string numero;
   string colonia;
+  Receiver *_receiver;
+  Invoker *_invoker;
 
 public:
+  // std::unique_ptr<Command> correo (new MandarCorreo(cliente.get()));
+  // std::unique_ptr<Command> llamada (new RealizarLlamada(cliente.get()));
+  // std::unique_ptr<Command> sms (new EnviarSms(cliente.get()));
+  std::unique_ptr<Invoker> switcher = std::make_unique<Invoker>();
   Cliente() {}
   ~Cliente() {}
-  //Cliente(int id, string nombre, string apellido, Command c) : cmd(c) {}
+  Cliente(int id, string nombre, string apellido, string formaDeContacto, string correo, string telefono, string calle, string numero, string colonia) {
+    _receiver = new Receiver;
+    if( formaDeContacto == "mail" ) {
+      _invoker->initialize(new MandarCorreo(_receiver));
+    } else if( formaDeContacto == "sms" ) {
+      _invoker->initialize(new EnviarSms(_receiver));
+    } else if( formaDeContacto == "phone_call") {
+      _invoker->initialize(new RealizarLlamada(_receiver));
+    }
+  }
 
-  void mandarCorreo() {
-    std::cout << "Mandar Correo!" << '\n';
-  }
-  void enviarSms() {
-    std::cout << "Enviar SMS!" << '\n';
-  }
-  void realizarLlamada() {
-    std::cout << "Realizar Llamada!" << '\n';
-  }
   void setInfo(int id,string nombre,string apellido,string formaDeContacto,string correo,string telefono,string calle,string numero,string colonia) {
     this->id = id;
     this->nombre = nombre;
@@ -59,41 +115,8 @@ public:
     this->numero = numero;
     this->colonia = colonia;
   }
-};
-
-class MandarCorreo : public Command {
-private:
-  Cliente *_cliente;
-public:
-  MandarCorreo(Cliente *cliente) {
-    _cliente = cliente;
-  }
-  void Execute() {
-    _cliente->mandarCorreo();
-  }
-};
-
-class EnviarSms : public Command {
-private:
-  Cliente *_cliente;
-public:
-  EnviarSms(Cliente *cliente) {
-    _cliente = cliente;
-  }
-  void Execute() {
-    _cliente->enviarSms();
-  }
-};
-
-class RealizarLlamada : public Command {
-private:
-  Cliente *_cliente;
-public:
-  RealizarLlamada(Cliente *cliente) {
-    _cliente = cliente;
-  }
-  void Execute() {
-    _cliente->realizarLlamada();
+  void revisar() {
+    _invoker->StoreAndExecute();
   }
 };
 
@@ -102,7 +125,7 @@ private:
   Tienda() {}
   ~Tienda() {}
   static Tienda* instance;
-  vector<Cliente> list;
+  vector<Cliente*> list;
 public:
   static Tienda *getInstance() {
     std::cout << "getInstance!" << '\n';
@@ -118,7 +141,9 @@ public:
     }
   }
 
-  void leerArchivo(string fileName) {
+  void leerArchivo() {
+    std::string line;
+    std::string word;
     // id, nombre, apellido, forma de contacto, correo, teléfono, calle, número y colonia.
     int id;
     string nombre;
@@ -130,41 +155,31 @@ public:
     string numero;
     string colonia;
 
-    std::fstream myfile( fileName, std::ios_base::in);
+
+    fstream myfile;
+    myfile.open("customers.txt");
+
     while(myfile)
     {
-
-        std::string line;
-        std::string word;
-        getline(myfile,line);
-        std::stringstream ss(line);
-        while(getline(myfile,line))
-        {
-            std::stringstream sss(line);
-            getline(sss, word,',');
-            id=stoi(word);
-            getline(sss, word,',');
-            nombre=word;
-            getline(sss, word,',');
-            apellido=word;
-            getline(sss, word,',');
-            formaDeContacto=word;
-            getline(sss, word,',');
-            correo=word;
-            getline(sss, word,',');
-            telefono=word;
-            getline(sss, word,',');
-            calle=word;
-            getline(sss, word,',');
-            numero=word;
-            getline(sss, word,',');
-            colonia=word;
-            Cliente cliente = new Cliente();
-            cliente.setInfo(id, nombre, apellido, formaDeContacto, correo, telefono, calle, numero, colonia);
-        }
-        delete cliente;
-
+      getline(myfile,nombre,',');
+      getline(myfile,apellido,',');
+      getline(myfile,formaDeContacto,',');
+      getline(myfile,correo,',');
+      getline(myfile,telefono,',');
+      getline(myfile,calle,',');
+      getline(myfile,numero,',');
+      getline(myfile,colonia,'\n');
+      Cliente *cliente = new Cliente(id, nombre, apellido, formaDeContacto, correo, telefono, calle, numero, colonia);
+      list.push_back(cliente);
     }
+    myfile.close();
+  }
+  void contact()
+  {
+      for(int i = 0; i < list.size();i++)
+      {
+          list[i]->revisar();
+      }
   }
 };
 Tienda* Tienda::instance = 0;
@@ -173,21 +188,24 @@ Tienda* Tienda::instance = 0;
 
 int main(int argc, char const *argv[]) {
   Tienda *instance = Tienda::getInstance();
-  // instance->leerArchivo("customers.txt");
+  instance->leerArchivo();
+  instance->contact();
   instance->deleteInstance();
 
-  // std::unique_ptr<Cliente> cliente = std::make_unique<Cliente>();
-  // std::unique_ptr<Command> correo (new MandarCorreo(cliente.get()));
-  // std::unique_ptr<Command> llamada (new RealizarLlamada(cliente.get()));
-  // std::unique_ptr<Command> sms (new EnviarSms(cliente.get()));
-  //
-  //
-  // std::unique_ptr<Invoker> switcher = std::make_unique<Invoker>();
-  // switcher->StoreAndExecute(correo.get());
-  // switcher->StoreAndExecute(llamada.get());
-  // switcher->StoreAndExecute(sms.get());
+  // Cliente *cliente = new Cliente();
   return 0;
 }
+
+// std::unique_ptr<Cliente> cliente = std::make_unique<Cliente>();
+// std::unique_ptr<Command> correo (new MandarCorreo(cliente.get()));
+// std::unique_ptr<Command> llamada (new RealizarLlamada(cliente.get()));
+// std::unique_ptr<Command> sms (new EnviarSms(cliente.get()));
+//
+//
+// std::unique_ptr<Invoker> switcher = std::make_unique<Invoker>();
+// switcher->StoreAndExecute(correo.get());
+// switcher->StoreAndExecute(llamada.get());
+// switcher->StoreAndExecute(sms.get());
 
 /*
 Crees las clases necesarias para almacenar la información de los clientes
@@ -244,3 +262,32 @@ Al menos utiliza : command y dos de creación
 //     std::cout << id << " " << nombre << " " << apellido << " " << formaDeContacto << " " << correo << " " << telefono << " " << calle << " " << numero << " " << colonia << " " <<'\n';
 //   }
 // }
+
+// // std::stringstream ss(line);
+// while(getline(myfile,line))
+// {
+//
+// }
+
+// std::stringstream sss(line);
+// getline(sss, word,',');
+// id=stoi(word);
+// getline(sss, word,',');
+// nombre=word;
+// getline(sss, word,',');
+// apellido=word;
+// getline(sss, word,',');
+// formaDeContacto=word;
+// getline(sss, word,',');
+// correo=word;
+// getline(sss, word,',');
+// telefono=word;
+// getline(sss, word,',');
+// calle=word;
+// getline(sss, word,',');
+// numero=word;
+// getline(sss, word,',');
+// colonia=word;
+// Cliente *cliente = new Cliente(id, nombre, apellido, formaDeContacto, correo, telefono, calle, numero, colonia);
+// list.push_back(cliente);
+// // delete cliente;
