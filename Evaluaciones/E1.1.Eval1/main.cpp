@@ -3,10 +3,6 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-// class Tienda {
-//   static count
-// };
-
 class Command {
 public:
   virtual void Execute() = 0;
@@ -35,7 +31,7 @@ class Cliente {
   string correo;
   string telefono;
   string calle;
-  int numero;
+  string numero;
   string colonia;
 
 public:
@@ -52,7 +48,7 @@ public:
   void realizarLlamada() {
     std::cout << "Realizar Llamada!" << '\n';
   }
-  void setInfo(int id,string nombre,string apellido,string formaDeContacto,string correo,string telefono,string calle,int numero,string colonia) {
+  void setInfo(int id,string nombre,string apellido,string formaDeContacto,string correo,string telefono,string calle,string numero,string colonia) {
     this->id = id;
     this->nombre = nombre;
     this->apellido = apellido;
@@ -101,64 +97,95 @@ public:
   }
 };
 
-void leerArchivo(string fileName) {    
-  // id, nombre, apellido, forma de contacto, correo, teléfono, calle, número y colonia.
-  int id;
-  string nombre;
-  string apellido;
-  string formaDeContacto;
-  string correo;
-  string telefono;
-  string calle;
-  int numero;
-  string colonia;
-
-  std::fstream myfile( fileName, std::ios_base::in);
-  while(myfile)
-  {
-      
-      std::string line;
-      std::string word;
-      getline(myfile,line);
-      std::stringstream ss(line);
-      while(getline(myfile,line))
-      {
-          std::stringstream sss(line);
-          getline(sss, word,',');
-          id=stoi(word);
-          getline(sss, word,',');
-          nombre=word;
-          getline(sss, word,',');
-          apellido=word;
-          getline(sss, word,',');
-          formaDeContacto=word;
-          getline(sss, word,',');
-          correo=word;
-          getline(sss, word,',');
-          telefono=stoi(word);
-          getline(sss, word,',');
-          calle=word;
-          getline(sss, word,',');
-          numero=stoi(word);
-          getline(sss, word,',');
-          colonia=word;
-      }
-      
+class Tienda {
+private:
+  Tienda() {}
+  ~Tienda() {}
+  static Tienda* instance;
+  vector<Cliente> list;
+public:
+  static Tienda *getInstance() {
+    std::cout << "getInstance!" << '\n';
+    if( instance = 0 ) {
+      instance = new Tienda;
+    }
+    return instance;
   }
-}
+  static Tienda *deleteInstance() {
+    if( instance != NULL ) {
+      delete instance;
+      instance = NULL;
+    }
+  }
+
+  void leerArchivo(string fileName) {
+    // id, nombre, apellido, forma de contacto, correo, teléfono, calle, número y colonia.
+    int id;
+    string nombre;
+    string apellido;
+    string formaDeContacto;
+    string correo;
+    string telefono;
+    string calle;
+    string numero;
+    string colonia;
+
+    std::fstream myfile( fileName, std::ios_base::in);
+    while(myfile)
+    {
+
+        std::string line;
+        std::string word;
+        getline(myfile,line);
+        std::stringstream ss(line);
+        while(getline(myfile,line))
+        {
+            std::stringstream sss(line);
+            getline(sss, word,',');
+            id=stoi(word);
+            getline(sss, word,',');
+            nombre=word;
+            getline(sss, word,',');
+            apellido=word;
+            getline(sss, word,',');
+            formaDeContacto=word;
+            getline(sss, word,',');
+            correo=word;
+            getline(sss, word,',');
+            telefono=word;
+            getline(sss, word,',');
+            calle=word;
+            getline(sss, word,',');
+            numero=word;
+            getline(sss, word,',');
+            colonia=word;
+            Cliente cliente = new Cliente();
+            cliente.setInfo(id, nombre, apellido, formaDeContacto, correo, telefono, calle, numero, colonia);
+        }
+        delete cliente;
+
+    }
+  }
+};
+Tienda* Tienda::instance = 0;
+
+
 
 int main(int argc, char const *argv[]) {
+  Tienda *instance = Tienda::getInstance();
+  // instance->leerArchivo("customers.txt");
+  instance->deleteInstance();
 
-  leerArchivo("customers.txt");
-  std::unique_ptr<Cliente> cliente = std::make_unique<Cliente>();
-  std::unique_ptr<Command> correo (new MandarCorreo(cliente.get()));
-  std::unique_ptr<Command> llamada (new RealizarLlamada(cliente.get()));
-  std::unique_ptr<Command> sms (new EnviarSms(cliente.get()));
-
-
-  std::unique_ptr<Invoker> switcher = std::make_unique<Invoker>();
-  switcher->StoreAndExecute(correo.get());
-  switcher->StoreAndExecute(llamada.get());
+  // std::unique_ptr<Cliente> cliente = std::make_unique<Cliente>();
+  // std::unique_ptr<Command> correo (new MandarCorreo(cliente.get()));
+  // std::unique_ptr<Command> llamada (new RealizarLlamada(cliente.get()));
+  // std::unique_ptr<Command> sms (new EnviarSms(cliente.get()));
+  //
+  //
+  // std::unique_ptr<Invoker> switcher = std::make_unique<Invoker>();
+  // switcher->StoreAndExecute(correo.get());
+  // switcher->StoreAndExecute(llamada.get());
+  // switcher->StoreAndExecute(sms.get());
   return 0;
 }
 

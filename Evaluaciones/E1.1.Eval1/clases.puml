@@ -21,23 +21,23 @@ class Cliente {
   +realizarLlamada(): void
 }
 
-class ClienteCorreo {
+class MandarCorreo {
 
 }
-class ClienteSMS {
+class EnviarSMS {
 
 }
-class ClienteLlamada {
+class RealizarLlamada {
 
 }
 
 Invoker o-- Command
-Command ^-- ClienteCorreo
-Command ^-- ClienteSMS
-Command ^-- ClienteLlamada
+Command ^-- MandarCorreo
+Command ^-- EnviarSMS
+Command ^-- RealizarLlamada
 
-ClienteCorreo --> Cliente
-ClienteSMS --> Cliente
-ClienteLlamada --> Cliente
+MandarCorreo --> Cliente
+EnviarSMS --> Cliente
+RealizarLlamada --> Cliente
 
 @enduml
