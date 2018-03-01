@@ -3,8 +3,14 @@ class Command {
   +Execute(): virtual void = 0
 }
 class Invoker {
-  -_commands
+  -Command *cmd;
+  +void initialize(Command *c);
   +StoreAndExecute(Command *command): void
+}
+class Receiver {
+  +mandarCorreo(): void
+  +enviarSms(): void
+  +realizarLlamada(): void
 }
 class Cliente {
   -id: int
@@ -16,18 +22,32 @@ class Cliente {
   -calle: string
   -numero: int
   -colonia: string
-  +mandarCorreo(): void
-  +enviarSms(): void
-  +realizarLlamada(): void
+  +void setInfo()
+  +void contactar()
+  +Receiver *_receiver
+  +Invoker *_invoker
+}
+
+class Tienda {
+-static Tienda* instance;
+-vector<Cliente*> list;
++static Tienda *getInstance()
++static Tienda *deleteInstance()
++void leerArchivo()
 }
 
 class MandarCorreo {
-
+-Receiver * _receiver;
++void Execute()
 }
 class EnviarSMS {
+-Receiver * _receiver;
++void Execute()
 
 }
 class RealizarLlamada {
+-Receiver * _receiver;
++void Execute()
 
 }
 
@@ -36,8 +56,10 @@ Command ^-- MandarCorreo
 Command ^-- EnviarSMS
 Command ^-- RealizarLlamada
 
-MandarCorreo --> Cliente
-EnviarSMS --> Cliente
-RealizarLlamada --> Cliente
+MandarCorreo --> Receiver
+EnviarSMS --> Receiver
+RealizarLlamada --> Receiver
 
+Cliente --> Receiver
+Cliente --> Invoker
 @enduml

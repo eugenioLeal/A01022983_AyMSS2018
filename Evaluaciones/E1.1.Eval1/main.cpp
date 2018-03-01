@@ -18,7 +18,7 @@ public:
     }
     void StoreAndExecute()
     {
-        cmd->Execute();
+      cmd->Execute();
     }
 };
 
@@ -90,7 +90,7 @@ public:
   // std::unique_ptr<Command> correo (new MandarCorreo(cliente.get()));
   // std::unique_ptr<Command> llamada (new RealizarLlamada(cliente.get()));
   // std::unique_ptr<Command> sms (new EnviarSms(cliente.get()));
-  std::unique_ptr<Invoker> switcher = std::make_unique<Invoker>();
+  // std::unique_ptr<Invoker> switcher = std::make_unique<Invoker>();
   Cliente() {}
   ~Cliente() {}
   Cliente(int id, string nombre, string apellido, string formaDeContacto, string correo, string telefono, string calle, string numero, string colonia) {
@@ -115,7 +115,7 @@ public:
     this->numero = numero;
     this->colonia = colonia;
   }
-  void revisar() {
+  void contactar() {
     _invoker->StoreAndExecute();
   }
 };
@@ -176,9 +176,9 @@ public:
   }
   void contact()
   {
-      for(int i = 0; i < list.size();i++)
+      for(int i = 0; i < list.size(); i++)
       {
-          list[i]->revisar();
+          list[i]->contactar();
       }
   }
 };
@@ -191,8 +191,6 @@ int main(int argc, char const *argv[]) {
   instance->leerArchivo();
   instance->contact();
   instance->deleteInstance();
-
-  // Cliente *cliente = new Cliente();
   return 0;
 }
 
