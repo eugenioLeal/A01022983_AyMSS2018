@@ -1,0 +1,179 @@
+@startuml
+
+abstract VideoGame {
+	+virtual VideoGame* clone() = 0;
+	+virtual void accept(Visitor*) = 0;
+	+int getId();
+	+string getName();
+	+float getPrice();
+	+void setPrice(float price);
+	#int id;
+	#string name;
+	#float price
+}
+class StrategyGame {
+	+StrategyGame();
+	+VideoGame* clone();
+	+void accept(Visitor* visitor)
+	-string period;
+	-bool supportsMultiplayer;
+	-int numborOfOpponents;
+}
+class AdventureGame {
+	+AdventureGame();
+	+VideoGame* clone();
+	+void accept(Visitor* visitor)
+	-string protagonistName;
+	-string storyDescription;
+	-int numberOfPuzzles;
+}
+class LearningGame {
+	+LearningGame();
+	+VideoGame* clone();
+	+void accept(Visitor* visitor)
+	-string subject;
+	-string skill;
+	-string teacherName;
+}
+interface Visitor {
+	+virtual void visit(StrategyGame) = 0;
+	+virtual void visit(AdventureGame) = 0;
+	+virtual void visit(LearningGame) = 0;
+}
+class TaxVisitor {
+	+void visit(StrategyGame strategy_game);
+	+void visit(AdventureGame adventure_game);
+	+void visit(LearningGame learning_game);
+}
+interface Command {
+	+virtual void execute() = 0;
+	+virtual void undo() = 0;
+}
+class InventorySystem {
+	+void addVideoGame(VideoGame* videogame)
+	+void deleteVideoGame(VideoGame* videogame)
+	+static bool sortFunction(VideoGame* i, VideoGame* j)
+	+static bool sortDescendingFunction(VideoGame* i, VideoGame* j)
+	+void sort()
+	+void sortDescending()
+	+void search(int id)
+	+void getSizeOfInventory()
+	+void printInventory()
+	+void taxVideoGames()
+	-vector<VideoGame*> videogames;
+}
+class AddVideoGame {
+	+AddVideoGame(InventorySystem* inventory_system, VideoGame* videogame)
+	+void execute()
+	+void undo()
+	-InventorySystem* inventory_system;
+	-VideoGame* videogame;
+}
+class DeleteVideoGame {
+	+DeleteVideoGame(InventorySystem* inventory_system, VideoGame* videogame)
+	+void execute()
+	+void undo()
+	-InventorySystem* inventory_system;
+	-VideoGame* videogame;
+}
+class Sort {
+
+}
+class SortDescending {
+	
+}
+class Search {
+	
+}
+class GetSizeOfInventory {
+	
+}
+class PrintInventory {
+	
+}
+class TaxVideoGames {
+	
+}
+class Invoker {
+	+void setCommand(Command* command)
+	+void executeButton()
+	+void undoButton()
+	+long unsigned int getSizeOfCommands()
+	+void revert(unsigned int n)
+	-Command* command;
+	-std::vector<Command*> commands;
+}
+class Subscriber {
+	+virtual void update(string, string) = 0;
+	+string getName()
+	#string name;
+}
+class ConcreteSubscriber {
+	+ConcreteSubscriber(string name)
+	+void update(string company_name, string message)
+}
+class Company {
+	+virtual void attach(Subscriber * obs) = 0;
+	+virtual void detach(Subscriber * obs) = 0;
+	+virtual void notifyAll() = 0;
+	+void setMessage(string message)
+	#vector<Subscriber*> subscribers;
+	#string name;
+	#string message;
+}
+class VideoGameCompany {
+	+VideoGameCompany(string name)
+	+void attach(Subscriber* subscriber)
+	+void detach(Subscriber* subscriber)
+	+void notifyAll()
+}
+
+note as Patterns
+Design Patterns used:
+Prototype
+Command
+Visitor
+Observer
+end note
+
+note top of VideoGame : Prototype Interface + Element Interface + Methods + Variables = VideoGame Abstract Class
+note bottom of StrategyGame : Concrete Prototype + Concrete Element
+note bottom of TaxVisitor : Concrete Visitor
+note top of InventorySystem : Receiver
+note bottom of DeleteVideoGame : Concrete Command
+note top of Subscriber : Observer
+note bottom of ConcreteSubscriber : ConcreteObserver
+note top of Company : Subject
+note bottom of VideoGameCompany : ConcreteSubject
+
+VideoGame <|-- StrategyGame
+VideoGame <|-- AdventureGame
+VideoGame <|-- LearningGame
+
+Invoker *-> Command
+Command <|-- AddVideoGame
+Command <|-- DeleteVideoGame
+Command <|-- Sort
+Command <|-- SortDescending
+Command <|-- Search
+Command <|-- GetSizeOfInventory
+Command <|-- PrintInventory
+Command <|-- TaxVideoGames
+
+InventorySystem <- AddVideoGame
+InventorySystem <- DeleteVideoGame
+InventorySystem <- Sort
+InventorySystem <- SortDescending
+InventorySystem <- Search
+InventorySystem <- GetSizeOfInventory
+InventorySystem <- PrintInventory
+InventorySystem <- TaxVideoGames
+
+Visitor <|-- TaxVisitor
+
+Subscriber <|-- ConcreteSubscriber
+Company <|-- VideoGameCompany
+
+
+
+@enduml
