@@ -13,11 +13,6 @@ class VideoGame {
 public:
 	virtual VideoGame* clone() = 0;
   	virtual void accept(Visitor*) = 0;
-	virtual void conception() = 0;
-	virtual void design() = 0;
-	virtual void planning() = 0;
-	virtual void production() = 0;
-	virtual void acceptanceTesting() = 0;
 	int getId() {
 		return id;
 	}
@@ -49,11 +44,6 @@ public:
 		return new StrategyGame(*this);
 	}
 	void accept(Visitor* visitor);
-	virtual void conception() {}
-	virtual void design() {}
-	virtual void planning() {}
-	virtual void production() {}
-	virtual void acceptanceTesting() {}
 private:
 	string period;
 	bool supportsMultiplayer;
@@ -72,12 +62,7 @@ public:
 	VideoGame* clone() {
 		return new AdventureGame(*this);
 	}
-  	void accept(Visitor* visitor);
-  	virtual void conception() {}
-	virtual void design() {}
-	virtual void planning() {}
-	virtual void production() {}
-	virtual void acceptanceTesting() {}
+  void accept(Visitor* visitor);
 private:
 	string protagonistName;
 	string storyDescription;
@@ -96,12 +81,7 @@ public:
 	VideoGame* clone() {
 		return new LearningGame(*this);
 	}
-  	void accept(Visitor* visitor);
-  	virtual void conception() {}
-	virtual void design() {}
-	virtual void planning() {}
-	virtual void production() {}
-	virtual void acceptanceTesting() {}
+  void accept(Visitor* visitor);
 private:
 	string subject;
 	string skill;
@@ -490,28 +470,7 @@ public:
 		}
 	}
 };
-//-------------//
-//-- Creator --//
-//-------------//
-class VideoGameCreator {
-public:
-	template <class T>
-	T* create() {
-		T* temp;
-		temp = factoryMethod<T>();
-		// temp->conception();
-		// temp->design();
-		// temp->planning();
-		// temp->production();
-		// temp->acceptanceTesting();
-		return temp;
-	}
-private:
-	template <class T>
-	T* factoryMethod() {
-		return new T;
-	}
-};
+
 
 int main(int argc, char const *argv[])
 {
